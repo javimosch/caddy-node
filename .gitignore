@@ -1,0 +1,5 @@
+.caddy
+.caddynode
+.env
+node_modules
+public_html

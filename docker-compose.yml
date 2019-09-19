@@ -1,0 +1,40 @@
+version: '3.1'
+
+networks:
+  proxy-tier:
+    external:
+      name: caddy-proxy
+
+services:
+  caddynode:
+    restart: always
+    image: node:lts-slim
+    container_name: caddy_node
+    environment:
+      - NODE_ENV=production
+      - IS_DOCKER=1
+    volumes:
+      - ./:/app
+    working_dir: /app
+    ports:
+      - 3000:3000
+    entrypoint: 
+      - yarn
+      - dev  
+  caddy:
+    restart: "no"
+    image: abiosoft/caddy
+    env_file: .env
+    container_name: caddy
+    volumes:
+      - ./.caddy:/etc/caddycerts
+      - $CADDY_FILE:/etc/Caddyfile
+      - ./:/cwd
+      - $CADDY_DOCKER_ROOT:/apps
+      - ./limits.conf:/etc/security/limits.conf
+    ports:
+      - 80:80
+      - 443:443  
+    command: ["--conf", "/etc/Caddyfile", "--log", "stdout", "--agree=$CADDY_DOCKER_ACME_AGREE", "--cpu","75%","$CADDY_DOCKER_EXTRA"]
+    networks:
+      - proxy-tier
