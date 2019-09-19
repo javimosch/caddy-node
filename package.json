@@ -1,0 +1,24 @@
+{
+    "name": "caddy-node",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "dependencies": {
+        "body-parser": "^1.19.0",
+        "cors": "^2.8.5",
+        "dotenv": "^8.1.0",
+        "express": "^4.17.1",
+        "funql-api": "^1.0.0",
+        "montpesites": "^1.0.3",
+        "promise-sequential": "^1.1.1",
+        "sander": "^0.6.0",
+        "ssh2-promise": "^0.1.5"
+    },
+    "scripts": {
+        "start": "node ./caddynode/index.js",
+        "dev": "nodemon --exec 'node ./caddynode/index.js' -e js --watch caddynode"
+    },
+    "devDependencies": {
+        "nodemon": "^1.19.2"
+    }
+}

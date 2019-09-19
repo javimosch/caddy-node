@@ -1,0 +1,5 @@
+http://caddynode.local {
+  proxy  / {%CADDY_DOCKER_GATEWAY%}:3000
+#  tls self_signed
+  basicauth / root {%CADDY_NODE_ROOT_PWD%}
+}
