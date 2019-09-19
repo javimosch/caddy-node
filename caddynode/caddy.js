@@ -3,7 +3,35 @@ let path = require('path')
 let configPath = path.join(process.cwd(), '.caddynode', 'config.json')
 let caddyfileBasePath = path.join(process.cwd(), 'caddyfiles')
 
+let ssh = getSSH()
+let connected = false
+
 module.exports = {
+    async getLocalConfig() {
+        let config = JSON.parse(
+            (await sander.readFile(configPath)).toString('utf-8')
+        )
+        return config
+    },
+    async clearSites() {
+        await sander.writeFile(configPath, JSON.stringify({}, null, 4))
+    },
+    async getLastLogs() {
+        if (!connected) {
+            await ssh.connect()
+            connected = true
+        }
+        try {
+            let logs = await ssh.exec(`docker logs caddy --tail 50`)
+            return {
+                result: logs
+            }
+        } catch (err) {
+            return {
+                result: err.toString()
+            }
+        }
+    },
     async getSites() {
         await ensureConfigFile(configPath)
         let config = JSON.parse(
@@ -34,9 +62,10 @@ module.exports = {
         } else {
             site.https = true
         }
-        site.domain = options.domain
-        site.root = options.root
-        site.proxy = options.proxy
+
+        Object.keys(options).forEach(key => {
+            site[key] = options[key]
+        })
 
         await sander.writeFile(configPath, JSON.stringify(config, null, 4))
     },
@@ -61,6 +90,7 @@ module.exports = {
             let site = config[siteName]
             if (!site.domain) return
             if (!site.root && !site.proxy) return
+            if (site.domain.indexOf('.') === -1) return
             let domain = isLocal ?
                 site.domain.substring(0, site.domain.lastIndexOf('.')) + '.local' :
                 site.domain
@@ -68,10 +98,25 @@ module.exports = {
             let proxyOrRoot = site.root ?
                 `root ${path.join('/apps/', site.root)}` :
                 `proxy / ${site.proxy}`
-
+            if (isLocal) {
+                site.wildcard_cert = false
+            }
+            let wildcard_cert = site.wildcard_cert ?
+                `
+    import wildcard_cert` :
+                ''
+            let tls =
+                site.https && isLocal ?
+                `
+    tls self_signed` :
+                ''
+            let basic_auth = site.basic_auth ?
+                `
+    basicauth / root {%CADDY_NODE_ROOT_PWD%}` :
+                ''
             caddyfileRaw += `
-${site.https ? 'https' : 'http'}://${domain} {
-    ${proxyOrRoot}
+${site.https ? 'https' : 'http'}://${domain} {${wildcard_cert}
+    ${proxyOrRoot}${tls}${basic_auth}
 }
 `
         })

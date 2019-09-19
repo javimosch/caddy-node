@@ -1,5 +1,11 @@
-https://caddy.misitioba.com {
-  proxy  / {%CADDY_DOCKER_GATEWAY%}:3000
-  tls self_signed
-  basicauth / root {%CADDY_NODE_ROOT_PWD%}
+(wildcard_cert) {
+    tls {
+        dns cloudflare
+        wildcard
+    }
 }
+
+#https://caddy.yourdomain.com {
+#  proxy  / {%CADDY_DOCKER_GATEWAY%}:{%CADDY_NODE_PORT%}
+#  basicauth / root {%CADDY_NODE_ROOT_PWD%}
+#}

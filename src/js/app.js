@@ -1,7 +1,7 @@
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 import Home from './containers/Home.vue'
-// import './styles/main.scss'
+ import './styles/main.scss'
 
 Vue.use(VueRouter)
 

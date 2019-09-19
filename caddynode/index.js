@@ -23,16 +23,23 @@ funql.middleware(server, {
         async getSites() {
             return await caddy.getSites()
         },
+        getDockerGateway() {
+            return process.env.CADDY_DOCKER_GATEWAY
+        },
+        isLocalhost() {
+            return process.env.CADDY_FILE.indexOf('Local') !== -1
+        },
+        async getCaddyNodeConfig() {
+            return await caddy.getLocalConfig()
+        },
+        async getCaddyLastLogs() {
+            return await caddy.getLastLogs()
+        },
         async saveSites(sites) {
+            await caddy.clearSites()
             await sequential(
                 sites.map(site => {
-                    return () =>
-                        caddy.addSite({
-                            domain: site.domain,
-                            https: site.https,
-                            root: site.root,
-                            identifier: site.identifier
-                        })
+                    return () => caddy.addSite(site)
                 })
             )
             await caddy.writeCaddyfile()
@@ -43,20 +50,20 @@ funql.middleware(server, {
 
 server.listen(3000, async() => {
     console.log('Ready at 3000')
-
-    await caddy.addSite({
-        identifier: 'montech',
-        https: false,
-        domain: 'montech.com',
-        root: `montpesites/apps/montech/public_html`
-    })
-    await caddy.addSite({
-        identifier: 'arancibiajav',
-        https: false,
-        domain: 'arancibiajav.misitioba.com',
-        root: `montpesites/apps/arancibiajav/public_html`
-    })
-    setTimeout(async() => {
-        // await caddy.writeCaddyfile()
-    }, 10000)
+        /*
+                                  await caddy.addSite({
+                                      identifier: 'montech',
+                                      https: false,
+                                      domain: 'montech.com',
+                                      root: `montpesites/apps/montech/public_html`
+                                  })
+                                  await caddy.addSite({
+                                      identifier: 'arancibiajav',
+                                      https: false,
+                                      domain: 'arancibiajav.misitioba.com',
+                                      root: `montpesites/apps/arancibiajav/public_html`
+                                  })
+                                  setTimeout(async() => {
+                                      // await caddy.writeCaddyfile()
+                                  }, 10000) */
 })
