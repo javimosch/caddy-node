@@ -5,7 +5,7 @@
     }
 }
 
-#https://caddy.yourdomain.com {
-#  proxy  / {%CADDY_DOCKER_GATEWAY%}:{%CADDY_NODE_PORT%}
-#  basicauth / root {%CADDY_NODE_ROOT_PWD%}
-#}
+https://caddy.yourdomain.com {
+  proxy  / caddynode:3000
+  basicauth / root {%CADDY_NODE_ROOT_PWD%}
+}
