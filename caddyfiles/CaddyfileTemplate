@@ -5,7 +5,20 @@
     }
 }
 
-https://caddy.yourdomain.com {
+https://caddy.misitioba.com {
   proxy  / caddynode:3000
   basicauth / root {%CADDY_NODE_ROOT_PWD%}
+}
+
+
+# MANUAL ENTRIES HERE
+
+
+https://montech.misitioba.com {
+  redir / https://montpedigital.misitioba.com 301
+}
+
+https://lesbaujardins.misitioba.com {
+	import wildcard_cert
+	redir https://savoie.misitioba.com/basket-hot?org=lesbaujardins
 }

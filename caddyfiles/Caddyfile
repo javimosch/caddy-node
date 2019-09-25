@@ -1,0 +1,86 @@
+(wildcard_cert) {
+    tls {
+        dns cloudflare
+        wildcard
+    }
+}
+
+https://caddy.misitioba.com {
+  proxy  / caddynode:3000
+  basicauth / root {%CADDY_NODE_ROOT_PWD%}
+}
+
+
+# MANUAL ENTRIES HERE
+
+
+https://montech.misitioba.com {
+  redir / https://montpedigital.misitioba.com 301
+}
+
+https://lesbaujardins.misitioba.com {
+	import wildcard_cert
+	redir https://savoie.misitioba.com/basket-hot?org=lesbaujardins
+}
+    
+https://montpedigital.misitioba.com {
+    import wildcard_cert
+    root /apps/montpedigital/public_html
+}
+
+https://misitioba.com {
+    root /apps/ba-landing/public_html
+}
+
+https://www.misitioba.com {
+    import wildcard_cert
+    root /apps/ba-landing/public_html
+}
+
+https://adminer.misitioba.com {
+    import wildcard_cert
+    proxy / 172.22.0.1:19995
+    basicauth / root {%CADDY_NODE_ROOT_PWD%}
+}
+
+https://netdata.misitioba.com {
+    import wildcard_cert
+    proxy / 172.22.0.1:19999
+    basicauth / root {%CADDY_NODE_ROOT_PWD%}
+}
+
+https://docker.misitioba.com {
+    import wildcard_cert
+    proxy / 172.22.0.1:9000
+}
+
+https://incubadoraitinerante.com {
+    root /apps/incubadora-itinerante/dist
+}
+
+https://www.incubadoraitinerante.com {
+    root /apps/incubadora-itinerante/dist
+}
+
+https://enbauges.com {
+    root /apps/bauges/dist
+}
+
+https://www.enbauges.com {
+    root /apps/bauges/dist
+}
+
+https://alvaro.misitioba.com {
+    import wildcard_cert
+    root /apps/projects/alvaro/dist
+}
+
+https://savoie.misitioba.com {
+    import wildcard_cert
+    proxy / 172.22.0.1:7373
+}
+
+https://arancibiajav.misitioba.com {
+    import wildcard_cert
+    root /apps/arancibiajav/public_html
+}
