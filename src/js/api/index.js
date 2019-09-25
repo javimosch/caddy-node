@@ -9,6 +9,7 @@ export default {
         if (transform) {
             payload.transform = transform.toString()
         }
+        console.log('SEND', name, payload)
         let r = await fetch('/funql-api', {
             method: 'POST',
             headers: {
@@ -17,6 +18,7 @@ export default {
             body: JSON.stringify(payload)
         })
         r = await r.json()
+        console.log('RES', name, r)
         return r
     }
 }

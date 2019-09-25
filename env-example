@@ -10,8 +10,8 @@ CADDY_NODE_ROOT_PWD=
 CADDY_NODE_PORT=3000
 CADDY_FILE=./caddyfiles/CaddyfileLocal
 CADDY_DOCKER_EXTRA=-ca=https://acme-staging-v02.api.letsencrypt.org/directory
-DEBUG=app*,funql*
-
+DEBUG=app*
+CADDYPATH=/etc/caddycerts
 EXAMPLES=
 CADDY_FILE_EXAMPLE_PRODUCTION=./caddyfiles/CaddyfileLocal
 CADDY_DOCKER_EXTRA_EXAMPLE_ONE=-ca=https://acme-staging-v02.api.letsencrypt.org/directory

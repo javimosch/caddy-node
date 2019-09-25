@@ -78,8 +78,8 @@ export default {
     async save() {
       if (
         this.isLocal ||
-        (!!this.isLocal &&
-          window.config(
+        (this.isLocal===false &&
+          window.confirm(
             "Configuration will be overwritted. Caddy can explode. Sure?"
           ))
       ) {
@@ -127,12 +127,18 @@ export default {
       }
     },
     async exportConfig() {
-      let config = await api.funql("getCaddyNodeConfig");
+      //let config = await api.funql("getCaddyNodeConfig");
+
+      let config = {}
+      this.sites.forEach(s=>{
+        config[s.identifier || s.domain] = s
+      })
+
       downloadObjectAsJson(config, `caddynode-config`);
       function downloadObjectAsJson(exportObj, exportName) {
         var dataStr =
           "data:text/json;charset=utf-8," +
-          encodeURIComponent(JSON.stringify(exportObj));
+          encodeURIComponent(JSON.stringify(exportObj,null,4));
         var downloadAnchorNode = document.createElement("a");
         downloadAnchorNode.setAttribute("href", dataStr);
         downloadAnchorNode.setAttribute("download", exportName + ".json");

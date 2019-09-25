@@ -12,31 +12,34 @@ module.exports = async app => {
                 enabled: true // process.env.NODE_ENV === 'production'
             },
             webpackBundling: {
+                webpackOptions: {
+                    devtool: process.env.NODE_ENV === 'production' ? false : 'eval'
+                },
                 writeToDisk: true,
                 watchUnder: 'js/',
                 compileOnRequest: true,
                 replaceRules: true,
                 module: {
                     rules: [{
-                            test: /\.vue$/,
-                            loader: 'vue-loader'
-                        },
-                        {
-                            test: /\.js$/,
-                            loader: 'babel-loader'
-                        },
-                        {
-                            test: /\.scss$/,
-                            use: ['vue-style-loader', 'css-loader', 'sass-loader']
-                        },
-                        {
-                            test: /\.css$/,
-                            use: ['vue-style-loader', 'css-loader']
-                        },
-                        {
-                            test: /\.pug$/,
-                            loader: 'pug-plain-loader'
-                        }
+                        test: /\.vue$/,
+                        loader: 'vue-loader'
+                    },
+                    {
+                        test: /\.js$/,
+                        loader: 'babel-loader'
+                    },
+                    {
+                        test: /\.scss$/,
+                        use: ['vue-style-loader', 'css-loader', 'sass-loader']
+                    },
+                    {
+                        test: /\.css$/,
+                        use: ['vue-style-loader', 'css-loader']
+                    },
+                    {
+                        test: /\.pug$/,
+                        loader: 'pug-plain-loader'
+                    }
                     ]
                 },
                 plugins: [
