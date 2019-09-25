@@ -38,3 +38,4 @@ services:
     command: ["--conf", "/etc/Caddyfile", "--log", "stdout", "--agree=$CADDY_DOCKER_ACME_AGREE", "--cpu","75%","$CADDY_DOCKER_EXTRA"]
     networks:
       - proxy-tier
+      - caddy
