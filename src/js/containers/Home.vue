@@ -1,5 +1,4 @@
 
-
 <template>
   <div class="home">
     <h2 v-html="enviromentTitle"></h2>
@@ -78,17 +77,16 @@ export default {
     async save() {
       if (
         this.isLocal ||
-        (this.isLocal===false &&
+        (this.isLocal === false &&
           window.confirm(
             "Configuration will be overwritted. Caddy can explode. Sure?"
           ))
       ) {
         this.cleanInvalidSites();
         this.normalizeSites();
-        await api.funql("saveSites", [[].concat(this.sites)]);
+        api.funql("saveSites", [[].concat(this.sites)]);
+        setTimeout(() => this.refreshLogs(), 10000);
       }
-
-      alert("Done");
     },
     getFileDialogContent() {
       return new Promise((resolve, reject) => {
@@ -129,16 +127,16 @@ export default {
     async exportConfig() {
       //let config = await api.funql("getCaddyNodeConfig");
 
-      let config = {}
-      this.sites.forEach(s=>{
-        config[s.identifier || s.domain] = s
-      })
+      let config = {};
+      this.sites.forEach(s => {
+        config[s.identifier || s.domain] = s;
+      });
 
       downloadObjectAsJson(config, `caddynode-config`);
       function downloadObjectAsJson(exportObj, exportName) {
         var dataStr =
           "data:text/json;charset=utf-8," +
-          encodeURIComponent(JSON.stringify(exportObj,null,4));
+          encodeURIComponent(JSON.stringify(exportObj, null, 4));
         var downloadAnchorNode = document.createElement("a");
         downloadAnchorNode.setAttribute("href", dataStr);
         downloadAnchorNode.setAttribute("download", exportName + ".json");
@@ -183,18 +181,15 @@ export default {
       let https = site.https ? "https" : "http";
       let domain = site.domain;
       if (this.isLocal) {
-        domain = domain.substring(0, domain.lastIndexOf(".")) + ".local";
+        domain = domain.substring(0, domain.lastIndexOf(".")) + ".localhost";
       }
       return https + `://` + domain;
     },
 
-    async logsWatcher() {
+    async refreshLogs() {
       api.funql("getCaddyLastLogs").then(res => {
         this.lastLogs = res.result;
       });
-    },
-    startLogsWatcher() {
-      setInterval(this.logsWatcher, 5000);
     }
   },
   computed: {
@@ -245,7 +240,6 @@ ${site.https ? "https" : "http"}://${domain} {${wildcard_cert}
     clearInterval(this.logsWatcher);
   },
   async mounted() {
-    this.startLogsWatcher();
     this.getDockerGateway().then(ip => {
       this.gatewayIp = ip;
     });
