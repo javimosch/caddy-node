@@ -31,8 +31,10 @@ require('montpesites/server')
                             return () => caddy.addSite(site)
                         })
                     )
-                    await caddy.writeCaddyfile()
-                    return true
+                    caddy.writeCaddyfile()
+                    return {
+                        result: 'will restart soon'
+                    }
                 }
             }
         })
