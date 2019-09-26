@@ -96,9 +96,15 @@ module.exports = {
                 site.domain.substring(0, site.domain.lastIndexOf('.')) + '.localhost' :
                 site.domain
 
+            let proxyDirective = site.proxy
+            let gateway = process.env.CADDY_DOCKER_GATEWAY
+            if(isLocal && !!gateway){
+                proxyDirective = proxyDirective.split('localhost').join(gateway)
+            }
+
             let proxyOrRoot = site.root ?
                 `root ${path.join('/apps/', site.root)}` :
-                `proxy / ${site.proxy}`
+                `proxy / ${proxyDirective}`
             if (isLocal) {
                 site.wildcard_cert = false
             }
