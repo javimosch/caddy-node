@@ -99,7 +99,7 @@ Very important. Possible values are:
 - ./caddyfiles/CaddyfileLocal (development, localhost)
 - ./caddyfiles/Caddyfile (production)
 
-Note: If CaddyfileLocal is specified domains will be rendered as .local. You can optionally edit your /etc/hosts for redirection.
+Note: If CaddyfileLocal is specified domains will replace ".com" for ".localhost".
 
 #### CLOUDFLARE_EMAIL
 
@@ -133,7 +133,7 @@ For example, check the example variable "CADDY_DOCKER_EXTRA_EXAMPLE_ONE", who se
 
 ## Known Issues
 
-- If caddy fails to start and you are using the GUI though caddynode.local (localhost mode), domain will be down and you need to access via localhost:3000 (default por for the GUI).
+- If caddy fails to start the GUI manager will not be accesible.
 - The GUI doesn't provide feedback after changes are saved.
 
 ## Roadmap
