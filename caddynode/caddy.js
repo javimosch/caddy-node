@@ -87,12 +87,13 @@ module.exports = {
         let caddyfileRaw = `
     `
         Object.keys(config).forEach(siteName => {
+            // console.log('Configuring', siteName)
             let site = config[siteName]
             if (!site.domain) return
             if (!site.root && !site.proxy) return
             if (site.domain.indexOf('.') === -1) return
             let domain = isLocal ?
-                site.domain.substring(0, site.domain.lastIndexOf('.')) + '.local' :
+                site.domain.substring(0, site.domain.lastIndexOf('.')) + '.localhost' :
                 site.domain
 
             let proxyOrRoot = site.root ?
@@ -110,6 +111,7 @@ module.exports = {
                 `
     tls self_signed` :
                 ''
+                // console.log(domain, 'tls', tls, 'https', site.https, 'isLocal', isLocal)
             let basic_auth = site.basic_auth ?
                 `
     basicauth / root {%CADDY_NODE_ROOT_PWD%}` :
@@ -121,20 +123,18 @@ ${site.https ? 'https' : 'http'}://${domain} {${wildcard_cert}
 `
         })
 
-        caddyfileRaw = caddyfileTemplate + caddyfileRaw
+        // console.log('writing file')
 
-        // console.log('CAN WRITE', caddyfileRaw)
+        caddyfileRaw = caddyfileTemplate + caddyfileRaw
         await sander.writeFile(
             path.join(caddyfileBasePath, `Caddyfile${isLocal ? 'Local' : ''}`),
             caddyfileRaw
         )
-
-        // console.log('DOCKER?', process.env.IS_DOCKER)
-        // return
         let ssh = getSSH()
         await ssh.connect()
         console.log(await ssh.exec(`docker restart caddy`))
         await ssh.close()
+        console.log('caddy restart success')
     }
 }
 
@@ -146,10 +146,17 @@ async function ensureConfigFile(configPath) {
 
 function getSSH() {
     var SSH2Promise = require('ssh2-promise')
+    let gateway = process.env.CADDY_DOCKER_GATEWAY
+    let host = process.env.CADDY_NODE_SSH_HOST
+    if (!!process.env.IS_DOCKER &&
+        host.indexOf('localhost') !== -1 &&
+        !!gateway
+    ) {
+        host = gateway
+        console.log('Using gateway to access localhost via ssh...', gateway)
+    }
     var sshconfig = {
-        host: process.env.IS_DOCKER ?
-            process.env.CADDY_DOCKER_GATEWAY :
-            process.env.CADDY_NODE_SSH_HOST,
+        host,
         username: process.env.CADDY_NODE_SSH_USER,
         identity: require('path').join(
             process.cwd(),
