@@ -1,10 +1,8 @@
 version: '3.1'
 
 networks:
-  proxy-tier:
-    external:
-      name: caddy-proxy
-  caddy:
+  caddy-node_caddy:
+    external: true
 
 services:
   caddynode:
@@ -21,14 +19,14 @@ services:
       - yarn
       - start
     networks:
-      - proxy-tier
-      - caddy 
+      - caddy-node_caddy 
   caddy:
     restart: "no"
     image: abiosoft/caddy
     env_file: .env
     container_name: caddy
     volumes:
+      - ./logs:/logs
       - ./.caddy:/etc/caddycerts
       - $CADDY_FILE:/etc/Caddyfile
       - ./:/cwd
@@ -39,5 +37,4 @@ services:
       - 443:443  
     command: ["--conf", "/etc/Caddyfile", "--log", "stdout", "--agree=$CADDY_DOCKER_ACME_AGREE", "--cpu","75%","$CADDY_DOCKER_EXTRA"]
     networks:
-      - proxy-tier
-      - caddy
+      - caddy-node_caddy

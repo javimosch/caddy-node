@@ -22,6 +22,18 @@ https://lesbaujardins.misitioba.com {
 	import wildcard_cert
 	redir https://savoie.misitioba.com/basket-hot?org=lesbaujardins
 }
+
+enbauges.com, www.enbauges.com {
+ proxy / enbauges_wp:80 {
+  transparent
+ }
+ log /logs/enbauges.log {
+  rotate_size 1       # Rotate after 2 MB
+  rotate_age  14      # Keep log files for 14 days
+  rotate_keep 10      # Keep at most 10 log files
+ }
+}
+
     
 https://montpedigital.misitioba.com {
     import wildcard_cert
@@ -29,29 +41,29 @@ https://montpedigital.misitioba.com {
 }
 
 https://misitioba.com {
-    root /apps/ba-landing/public_html
+    root /apps/misitioba-nuxt/build
 }
 
 https://www.misitioba.com {
     import wildcard_cert
-    root /apps/ba-landing/public_html
+    root /apps/misitioba-nuxt/build
 }
 
 https://adminer.misitioba.com {
     import wildcard_cert
-    proxy / 172.22.0.1:19995
+    proxy / adminer:8080
     basicauth / root {%CADDY_NODE_ROOT_PWD%}
 }
 
 https://netdata.misitioba.com {
     import wildcard_cert
-    proxy / 172.22.0.1:19999
+    proxy / netdata:19999
     basicauth / root {%CADDY_NODE_ROOT_PWD%}
 }
 
 https://docker.misitioba.com {
     import wildcard_cert
-    proxy / 172.22.0.1:9000
+    proxy / portainer:9000
 }
 
 https://incubadoraitinerante.com {
@@ -62,25 +74,123 @@ https://www.incubadoraitinerante.com {
     root /apps/incubadora-itinerante/dist
 }
 
-https://enbauges.com {
-    root /apps/bauges/dist
-}
-
-https://www.enbauges.com {
+https://enbauges.misitioba.com {
+    import wildcard_cert
     root /apps/bauges/dist
 }
 
 https://alvaro.misitioba.com {
     import wildcard_cert
-    root /apps/projects/alvaro/dist
+    root /apps/alvaro/dist
 }
 
 https://savoie.misitioba.com {
     import wildcard_cert
-    proxy / 172.22.0.1:7373
+    proxy / savoie:3000
 }
 
 https://arancibiajav.misitioba.com {
     import wildcard_cert
     root /apps/arancibiajav/public_html
+}
+
+https://mongo.misitioba.com {
+    import wildcard_cert
+    proxy / mongo-gui:8081
+    basicauth / root {%CADDY_NODE_ROOT_PWD%}
+}
+
+https://edge.bureaucoop.misitioba.com {
+    import wildcard_cert
+    root /apps/savoie-edge/apps/bureaucoop/public_html
+}
+
+https://edge.savoie.misitioba.com {
+    import wildcard_cert
+    proxy / 178.128.254.49:3600
+}
+
+https://mfc.misitioba.com {
+    import wildcard_cert
+    proxy / 178.128.254.49:3600/imptfc
+}
+
+https://wetty.misitioba.com {
+    import wildcard_cert
+    proxy / 178.128.254.49:9055
+}
+
+https://preview.hdmpt.misitioba.com {
+    import wildcard_cert
+    root /apps/hd-mpt-landing
+}
+
+https://api.mfc.misitioba.com {
+    import wildcard_cert
+    proxy / 178.128.254.49:3310
+}
+
+https://cloudcms.misitioba.com {
+    import wildcard_cert
+    proxy / 178.128.254.49:8757
+}
+
+https://comments.mfc.misitioba.com {
+    import wildcard_cert
+    proxy / 178.128.254.49:3333
+}
+
+https://notes.devforgood.org {
+    import wildcard_cert
+    proxy / 178.128.254.49:3838
+}
+
+https://devforgood.org {
+    proxy / dfg-next:3000
+}
+
+https://hookcmd.misitioba.com {
+    import wildcard_cert
+    proxy / hookcmd:3000/admin
+    basicauth / root {%CADDY_NODE_ROOT_PWD%}
+}
+
+https://webhooks.misitioba.com {
+    import wildcard_cert
+    proxy / hookcmd:3000
+}
+
+https://www.devforgood.org {
+    import wildcard_cert
+    proxy / dfg-next:3000
+}
+
+https://rabbit.misitioba.com {
+    import wildcard_cert
+    proxy / 178.128.254.49:15672
+}
+
+https://mail.misitioba.com {
+    import wildcard_cert
+    proxy / poste:80
+}
+
+https://happydev.misitioba.com {
+    import wildcard_cert
+    root /apps/hd-website/build
+}
+
+https://forum.devforgood.org {
+    import wildcard_cert
+    proxy / dfg-flarum:8888
+}
+
+https://strapi.misitioba.com {
+    import wildcard_cert
+    proxy / strapi:1337
+}
+
+https://strapi.happydev.misitioba.com {
+    import wildcard_cert
+    proxy / hd_strapi:1337
 }
