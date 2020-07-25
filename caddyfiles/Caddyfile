@@ -27,11 +27,6 @@ enbauges.com, www.enbauges.com {
  proxy / enbauges_wp:80 {
   transparent
  }
- log /logs/enbauges.log {
-  rotate_size 1       # Rotate after 2 MB
-  rotate_age  14      # Keep log files for 14 days
-  rotate_keep 10      # Keep at most 10 log files
- }
 }
 
     
@@ -193,4 +188,18 @@ https://strapi.misitioba.com {
 https://strapi.happydev.misitioba.com {
     import wildcard_cert
     proxy / hd_strapi:1337
+}
+
+https://www.eutopiaecoaldea.com {
+    import wildcard_cert
+    proxy / eutopiaecoaldea:3000
+}
+
+https://prefectureherault.misitioba.com {
+    import wildcard_cert
+    proxy / rdvprefempt:3000
+}
+
+https://eutopiaecoaldea.com {
+    proxy / eutopiaecoaldea:3000
 }
